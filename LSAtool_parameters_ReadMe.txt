@@ -1,6 +1,6 @@
 ##PARAMETERS
 #The following part is the parameters the code needs in order to run. DO NOT remove any hashtag signs or value titles,
-#only change the numbers in front of them according to your excel sheet
+#only change the numbers in front of them according to your excel sheet. The numbers are actual column and row numbers and not index.
 
 #How many responses each subject has?-->nr 
 nr = 3
