@@ -6,14 +6,14 @@
 nr = 3
 #Which sheet do you want to work on? --> sh
 sh = 2
-#Which column index is the subject number? --> sid
+#Which column number is the subject number? --> sid
 sid = 1
-#Which Column index is the first word? --> cfw
+#Which Column number is the first word? --> cfw
 cfw = 7
-#which Column index is the last word? --> clw
+#which Column number is the last word? --> clw
 clw = 15
-#Which row index is the first word? --> rfw
+#Which row number is the first word? --> rfw
 rfw = 259
-#Which row index is the last word? --> rlw 
+#Which row number is the last word? --> rlw 
 rlw=261
 
