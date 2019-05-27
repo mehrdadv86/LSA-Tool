@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# Name:        LSA Tool
+# Name:        LSA Tool V1.1
 # Purpose:     The script gets a list of words from an excel sheet and will
 #              upload them to the following website: http://lsa.colorado.edu/cgi-bin/LSA-matrix.html,
 #              "This interface allows you to compare the similarity of multiple
@@ -11,17 +11,19 @@
 # email:       mehrdadv@mail.usf.edu
 #
 # Created:     04/04/2018
-# Copyright:   (c) Mehrdad 2018
+# Updated:     05/27/2019
+# Copyright:   (c) Mehrdad 2019
 # 
 #-------------------------------------------------------------------------------
 
+import sys
 from mechanize import Browser
 import pandas as pd
 import time
 import xlrd
 from Tkinter import Tk
 from tkFileDialog import askopenfilename,askdirectory
-import tkFileDialog
+
 
 Tk().withdraw()
 xlspath=askopenfilename(title = "Select Excel sheet of the words") #Loading the file
@@ -44,74 +46,36 @@ except:
 
 
 def processXLS(xlspath,outputFolder):
-    rows=[]
+    rows=[]            
     wb1 = xlrd.open_workbook(xlspath)
     sh1 = wb1.sheet_by_index(sh-1)
     for rownum in range(rfw-1,rlw):
         rows += [sh1.row_values(rownum,start_colx=sid-1, end_colx=clw)]
-
+    
     wlist = []
-    i = 0
-    if nr>1:
-        for item in rows:
-            if i<=nr:
-                if i == 0:
-                    id = item[sid-1]
-                    tid = type(item[sid-1])
-                    i=i+1
-                    del item [sid:cfw-1]
-                    for x in item:
-                        if x !="":
-                            wlist.append(str(x))
+    for item in rows:
 
-                elif i>0:
-                    if item[sid-1] == id:
-                        i=i+1
-                        del item[sid-1:cfw-1]
-                        for x in item:
-                            if x !="":
-                                wlist.append(str(x))
+        id = item[sid-1]
+        tid = type(item[sid-1])
+        del item [sid:cfw-1]
+        for x in item:
+            if x !="":
+                wlist.append(str(x))
+        if tid==float:
+            outputname = int(id)
+        if tid==unicode or tid==str:
+            outputname = wlist[sid-1]
+        outName = "subject_%s.csv"%outputname
 
-                    if i==nr:
-                        if tid==float:
-                            outputname = int(id)
-                        if tid==unicode or tid==str:
-                            outputname = wlist[sid-1]
-                        outName = "subject_%s.csv"%outputname
-                        print "subject_%s"%outputname +"\nlist of words"
-                        if len(wlist)>2:
-                            result = getMatrixPage(wlist[-(len(wlist)-1):])
-                            try:
-                                result.to_csv(outputFolder+"\\"+outName,index=False)
+        if len(wlist)>2:
+            result = getMatrixPage(wlist[-(len(wlist)-1):])
+            try:
+                result.to_csv(outputFolder+"\\"+outName,index=False)
 
-                            except:
-                                print (result)
-                        wlist = []
-                        i=0
-                        time.sleep(2)
-    else:
-        for item in rows:
-            tid = type(item[sid-1])
-            del item[sid:cfw-1]
-
-            for x in item:
-                if x !="":
-                    wlist.append(str(x))
-            if tid==float:
-                outputname = int(item[sid-1])
-            if tid==str or tid==unicode:
-                outputname = wlist[sid-1]
-            outName = "subject_%s.csv"%outputname
-            print ("subject_%s"%outputname +"\nlist of words")
-            if len(wlist[-clw:])>1:
-                result = getMatrixPage(wlist[-(len(wlist)-1):])
-                try:
-                    result.to_csv(outputFolder+"\\"+outName,index=False)
-
-                except:
-                    print (result)
-            time.sleep(2)
+            except:
+                print (result)
             wlist = []
+            time.sleep(2)
 
 def getMatrixPage(listKeyWords,url="http://lsa.colorado.edu/cgi-bin/LSA-matrix.html",numFactors="150"):
     """Submit the form and get the soup
