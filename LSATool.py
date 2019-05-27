@@ -67,7 +67,7 @@ def processXLS(xlspath,outputFolder):
             outputname = wlist[sid-1]
         outName = "subject_%s.csv"%outputname
 
-        if len(wlist)>2:
+        if len(wlist)>=2:
             result = getMatrixPage(wlist[-(len(wlist)-1):])
             try:
                 result.to_csv(outputFolder+"\\"+outName,index=False)
